@@ -1,0 +1,77 @@
+name: MemoryCleaner
+options:
+  bundleIdPrefix: com.ericbotperez
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: NO
+
+targets:
+  MemoryCleaner:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/MemoryCleaner
+        excludes:
+          - Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ericbotperez.MemoryCleaner
+        PRODUCT_NAME: MemoryCleaner
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_CFBundleDisplayName: "Memory Cleaner"
+        INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.utilities"
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026"
+        INFOPLIST_KEY_NSPrincipalClass: NSApplication
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        COMBINE_HIDPI_IMAGES: YES
+    info:
+      path: Sources/MemoryCleaner/Info.plist
+      properties:
+        CFBundleDisplayName: Memory Cleaner
+        LSApplicationCategoryType: public.app-category.utilities
+        LSMinimumSystemVersion: "14.0"
+        NSPrincipalClass: NSApplication
+        NSHighResolutionCapable: true
+    entitlements:
+      path: Sources/MemoryCleaner/MemoryCleaner.entitlements
+      properties:
+        # Sin sandbox: necesitamos ejecutar `purge` y leer stats del sistema.
+        com.apple.security.app-sandbox: false
+
+  MemoryCleanerTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/MemoryCleanerTests
+    dependencies:
+      - target: MemoryCleaner
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ericbotperez.MemoryCleanerTests
+        GENERATE_INFOPLIST_FILE: true
+        SWIFT_VERSION: "5.0"
+
+schemes:
+  MemoryCleaner:
+    build:
+      targets:
+        MemoryCleaner: all
+        MemoryCleanerTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - MemoryCleanerTests
